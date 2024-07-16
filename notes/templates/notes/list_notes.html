@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List Notes</title>
+  </head>
+  <body>
+    <h1>List Notes</h1>
+    {% if user.is_authenticated %}
+    <ul>
+      {% for note in notes %}
+      <li>{{ note.content }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>You need to be logged in to view your notes.</p>
+    {% endif %}
+  </body>
+</html>
