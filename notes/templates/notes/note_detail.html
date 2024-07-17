@@ -1,0 +1,17 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Note Detail</title>
+    <link rel="stylesheet" href="{% static 'notes/style.css' %}" />
+  </head>
+  <body>
+    <h1>Note Detail</h1>
+    <p>Title: {{ note.title }}</p>
+    <p>Content: {{ note.content }}</p>
+    <p>Current Views: {{ note.current_views }}</p>
+    <p>Max Views: {{ note.max_views }}</p>
+    <p>Expires At: {{ note.expiration_date }}</p>
+  </body>
+</html>

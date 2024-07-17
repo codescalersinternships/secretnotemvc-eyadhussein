@@ -1,0 +1,16 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Create Note</title>
+    <link rel="stylesheet" href="{% static 'notes/style.css' %}" />
+  </head>
+  <body>
+    <h1>Create Note</h1>
+    <form method="post">
+      {% csrf_token %} {{ form.as_p }}
+      <button class="create" type="submit">Create</button>
+    </form>
+  </body>
+</html>
