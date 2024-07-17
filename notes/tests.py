@@ -168,7 +168,7 @@ class EndToEndTests(TestCase):
 
     def test_user_registration_and_login_and_create_note_flow(self):
         response = self.client.post(self.register_url, self.user_data)
-        self.assertEqual(response.status_code, 302)  # Redirect after registration
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(User.objects.filter(username="newuser").exists())
 
         login_data = {
