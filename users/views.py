@@ -25,7 +25,7 @@ def register_view(request):
 @ratelimit(key="ip", rate="50/h", block=True)
 def login_view(request):
     if request.method == "POST":
-        form = LoginForm(request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
