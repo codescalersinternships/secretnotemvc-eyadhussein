@@ -37,7 +37,7 @@ class NoteModelTests(TestCase):
         self.assertFalse(self.note.is_expired())
 
 
-class CreateNoteViewTestCase(TestCase):
+class CreateNoteViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username="testuser", password="12345")
@@ -81,7 +81,7 @@ class CreateNoteViewTestCase(TestCase):
         self.client.logout()
 
 
-class ListNotesViewTestCase(TestCase):
+class ListNotesViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username="testuser", password="12345")
@@ -101,7 +101,7 @@ class ListNotesViewTestCase(TestCase):
         self.client.logout()
 
 
-class NoteDetailViewTestCase(TestCase):
+class NoteDetailViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username="testuser", password="12345")
@@ -139,6 +139,53 @@ class NoteDetailViewTestCase(TestCase):
         response = self.client.get(self.detail_url)
         self.note.refresh_from_db()
         self.assertEqual(self.note.current_views, initial_views + 1)
+
+    def tearDown(self):
+        self.client.logout()
+
+
+class EndToEndTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.register_url = reverse("users:register")
+        self.login_url = reverse("users:login")
+        self.create_note_url = reverse("notes:create_note")
+        self.list_notes_url = reverse("notes:list_notes")
+
+        self.user_data = {
+            "username": "newuser",
+            "email": "newuser@example.com",
+            "password1": "*Newpassword1234#",
+            "password2": "*Newpassword1234#",
+        }
+
+        self.note_data = {
+            "title": "E2E Test Note",
+            "content": "This is a test note created during E2E test.",
+            "expiration_date": timezone.now() + timedelta(days=30),
+            "max_views": 5,
+        }
+
+    def test_user_registration_and_login_and_create_note_flow(self):
+        response = self.client.post(self.register_url, self.user_data)
+        self.assertEqual(response.status_code, 302)  # Redirect after registration
+        self.assertTrue(User.objects.filter(username="newuser").exists())
+
+        login_data = {
+            "username": "newuser",
+            "password": "*Newpassword1234#",
+        }
+        response = self.client.post(self.login_url, login_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(self.list_notes_url))
+
+        response = self.client.post(self.create_note_url, self.note_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Note.objects.filter(title="E2E Test Note").exists())
+
+        response = self.client.get(self.list_notes_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("E2E Test Note", response.content.decode())
 
     def tearDown(self):
         self.client.logout()

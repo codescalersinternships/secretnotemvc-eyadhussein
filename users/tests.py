@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from .forms import RegistrationForm, LoginForm
 
 
-class RegisterViewTestCase(TestCase):
+class RegisterViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.register_url = reverse("users:register")
@@ -43,7 +43,7 @@ class RegisterViewTestCase(TestCase):
         self.assertFalse(User.objects.filter(username="testuser").exists())
 
 
-class LoginViewTestCase(TestCase):
+class LoginViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.login_url = reverse("users:login")
@@ -81,7 +81,7 @@ class LoginViewTestCase(TestCase):
         self.assertContains(response, "Please enter a correct username and password.")
 
 
-class LogoutViewTestCase(TestCase):
+class LogoutViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.logout_url = reverse("users:logout")
