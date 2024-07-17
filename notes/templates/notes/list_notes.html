@@ -1,16 +1,43 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
   <head>
     <title>List Notes</title>
+    <link rel="stylesheet" href="{% static 'notes/style.css' %}" />
   </head>
   <body>
     <h1>List Notes</h1>
     {% if user.is_authenticated %}
     <ul>
       {% for note in notes %}
-      <li>{{ note.content }}</li>
+      <li>
+        <a href="{% url 'notes:note_detail' note.id %}">{{ note.title }}</a>
+      </li>
+      <p>Content: {{ note.content }}</p>
+      <p>Current Views: {{ note.current_views }}</p>
+      <p>Max Views: {{ note.max_views }}</p>
+      <p>Expires At: {{ note.expiration_date }}</p>
+      <p>
+        Secure Link:
+        <a href="{% url 'notes:note_detail' note.id %}"
+          >{{ request.build_absolute_uri }}{{note.id}}</a
+        >
+      </p>
       {% endfor %}
     </ul>
+
+    <div class="buttons">
+      <form action="{% url 'notes:create_note' %}" method="post">
+        {% csrf_token %}
+        <button class="create" type="submit">Create</button>
+      </form>
+
+      <form action="{% url 'users:logout' %}" method="post">
+        {% csrf_token %}
+        <button class="logout" type="submit">Logout</button>
+      </form>
+    </div>
     {% else %}
     <p>You need to be logged in to view your notes.</p>
     {% endif %}

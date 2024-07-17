@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django_ratelimit.decorators import ratelimit
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
+from django.contrib.auth.decorators import login_required
 
 from .forms import RegistrationForm, LoginForm
 
@@ -36,3 +36,9 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, "users/login.html", {"form": form})
+
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect(reverse("users:login"))

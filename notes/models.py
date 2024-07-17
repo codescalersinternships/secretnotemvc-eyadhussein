@@ -26,9 +26,5 @@ class Note(models.Model):
             return True
         return False
 
-    @property
-    def secure_url(self):
-        return reverse("notes:note_detail", kwargs={"pk": self.id})
-
     def __str__(self):
         return self.title
